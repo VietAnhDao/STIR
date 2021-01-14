@@ -1,0 +1,7 @@
+CListModeDataSAFIR Parameters:=
+	listmode data filename:= moliner.clm.safir 
+	crystal map filename:= ./scanner_templates/BPET_25cm45_crystal_map.txt 
+	template projection data filename:= ./scanner_templates/BPET_Leipzig5.hs 
+	LOR randomization (Gaussian) sigma := 1.0
+END CListModeDataSAFIR Parameters:=
+

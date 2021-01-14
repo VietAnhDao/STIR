@@ -1,0 +1,33 @@
+OSMAPOSLParameters :=
+; example file for EMML
+
+objective function type:= PoissonLogLikelihoodWithLinearModelForMeanAndProjData
+PoissonLogLikelihoodWithLinearModelForMeanAndProjData Parameters:=
+
+input file := ${INPUT}
+
+additive sinogram := ${ADDITIVE}
+
+Bin Normalisation From ProjData :=
+    normalisation projdata filename:= ${MULT_FACTOR}
+End Bin Normalisation From ProjData:=
+
+; if the next parameters are enabled, 
+; the sensitivity will be computed and saved
+; use %d where you want the subset-number (a la printf)
+; we do this here for illustration, but also for re-use later on (to save some time)
+; CAREFUL: use correct number of subsets in name to avoid confusion
+; subset sensitivity filenames:= subset_sensitivity_1subsets_%d.hv
+; recompute sensitivity := 1
+
+
+end PoissonLogLikelihoodWithLinearModelForMeanAndProjData Parameters:=
+
+output filename prefix := ${OUTPUT}
+number of subsets:= 1
+number of subiterations:= 30
+save estimates at subiteration intervals:= 10
+
+;initial estimate:= 1.hv
+
+END :=

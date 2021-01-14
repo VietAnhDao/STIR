@@ -1,0 +1,81 @@
+OSMAPOSLParameters :=
+; minimal .par file to illustrate running OSMAPOSL as EMML with 
+; projectors derived from a single projection matrix
+; see OSMAPOSL_osem_with_interfiltering.par for other parameters
+
+
+objective function type:= PoissonLogLikelihoodWithLinearModelForMeanAndProjData
+PoissonLogLikelihoodWithLinearModelForMeanAndProjData Parameters:=
+
+; if next is set to 1, sensitivity will be recomputed
+; and also written to file (if "sensitivity filename" or "subset sensitivity filenames" is set)
+; if it is zero, the sensitivity will be read from file
+ recompute sensitivity := 0
+ use subset sensitivities:=0 ; recommended
+ ; optional filename to store/read the sensitivity image 
+ ; (if "use subset sensitivity" is off)
+;sensitivity filename:= sensitivity.hv
+ ; optional filename to store/read the subsensitivities
+ ; use %d where you want the subset-number (a la printf)
+ subset sensitivity filenames:= sens_%d.hv
+
+;Bin Normalisation Type := chained
+;Chained Bin Normalisation Parameters :=
+;  Bin Normalisation to Apply first := from projdata
+;  Bin Normalisation from projdata:=
+;    normalisation projdata filename := ${NORM}
+;  End Bin Normalisation from projdata:=
+;End Chained Bin Normalisation Parameters :=
+
+Bin Normalisation From ProjData :=
+    normalisation projdata filename:= ${NORM}
+End Bin Normalisation From ProjData:=
+
+input file := ${INPUT}
+zoom := 1
+projector pair type := Matrix
+  Projector Pair Using Matrix Parameters :=
+  Matrix type := Ray Tracing
+  Ray tracing matrix parameters :=
+   ; use multiple (almost) parallel LORs for every bin in the sinogram 
+   ; to avoid discretisation artefacts
+   number of rays in tangential direction to trace for each bin:= 5
+   ; you could disable some symmetries if you have enough memory
+   ; this would for instance allow you to increase the number of subsets
+   ; do_symmetry_90degrees_min_phi:=0
+  End Ray tracing matrix parameters :=
+  End Projector Pair Using Matrix Parameters :=
+
+end PoissonLogLikelihoodWithLinearModelForMeanAndProjData Parameters:=
+
+;initial estimate:= atnmap.hv
+output filename prefix := ${OUTPUT}
+
+;inter-iteration filter subiteration interval:= 20
+;inter-iteration filter type := Separable Cartesian Metz
+;  Separable Cartesian Metz Filter Parameters :=
+;  x-dir filter FWHM (in mm):= 4.2
+;  y-dir filter FWHM (in mm):= 4.2
+;  z-dir filter FWHM (in mm):= 4.2
+;  x-dir filter Metz power:= 0.0
+;  y-dir filter Metz power:= 0.0
+;  z-dir filter Metz power:= 0.0
+;END Separable Cartesian Metz Filter Parameters :=
+
+;inter-iteration filter subiteration interval:= 10
+;inter-iteration filter type := Separable Cartesian Metz
+;  Separable Cartesian Metz Filter Parameters :=
+;  x-dir filter FWHM (in mm):= 4.0
+;  y-dir filter FWHM (in mm):= 4.0
+;  z-dir filter FWHM (in mm):= 1.0
+;  x-dir filter Metz power:= 0.0
+;  y-dir filter Metz power:= 0.0
+;  z-dir filter Metz power:= 0.0
+;END Separable Cartesian Metz Filter Parameters :=
+
+number of subsets:= 1
+number of subiterations:= 40
+Save estimates at subiteration intervals:= 10
+
+
+END :=
