@@ -32,7 +32,7 @@
 #include "stir/Scanner.h"
 #include "stir/Viewgram.h"
 #include "stir/Succeeded.h"
-#include "stir/ProjDataInfoCylindricalNoArcCorr.h"
+#include "stir/ProjDataInfoBlocksOnCylindricalNoArcCorr.h"
 #include "stir/scatter/SingleScatterSimulation.h"
 #include "stir/zoom.h"
 #include "stir/round.h"
@@ -91,7 +91,7 @@ test_downsampling_ProjDataInfo()
     shared_ptr<Scanner> test_scanner(new Scanner(type));
 
     // Create the original projdata
-    shared_ptr<ProjDataInfoCylindricalNoArcCorr> original_projdata( dynamic_cast<ProjDataInfoCylindricalNoArcCorr* >(
+    shared_ptr<ProjDataInfoBlocksOnCylindricalNoArcCorr> original_projdata( dynamic_cast<ProjDataInfoBlocksOnCylindricalNoArcCorr* >(
                                                                         ProjDataInfo::ProjDataInfoCTI(test_scanner,
                                                                                                       1, test_scanner->get_num_rings()-1,
                                                                                                       test_scanner->get_num_detectors_per_ring()/2,
@@ -143,7 +143,7 @@ test_downsampling_DiscretisedDensity()
     shared_ptr<Scanner> test_scanner(new Scanner(type));
 
     // Create the original projdata
-    shared_ptr<ProjDataInfoCylindricalNoArcCorr> original_projdata( dynamic_cast<ProjDataInfoCylindricalNoArcCorr* >(
+    shared_ptr<ProjDataInfoBlocksOnCylindricalNoArcCorr> original_projdata( dynamic_cast<ProjDataInfoBlocksOnCylindricalNoArcCorr* >(
                                                                         ProjDataInfo::ProjDataInfoCTI(test_scanner,
                                                                                                       1, test_scanner->get_num_rings()-1,
                                                                                                       test_scanner->get_num_detectors_per_ring()/2,
@@ -363,7 +363,7 @@ ScatterSimulationTests::test_scatter_simulation()
     sss->set_exam_info(*exam);
 
     // Create the original projdata
-    shared_ptr<ProjDataInfoCylindricalNoArcCorr> original_projdata_info( dynamic_cast<ProjDataInfoCylindricalNoArcCorr* >(
+    shared_ptr<ProjDataInfoBlocksOnCylindricalNoArcCorr> original_projdata_info( dynamic_cast<ProjDataInfoBlocksOnCylindricalNoArcCorr* >(
                                                                              ProjDataInfo::ProjDataInfoCTI(test_scanner,
                                                                                                            1, 0,
                                                                                                            test_scanner->get_num_detectors_per_ring()/2,

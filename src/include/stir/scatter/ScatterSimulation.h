@@ -34,7 +34,7 @@
 #include "stir/RegisteredObject.h"
 #include "stir/ProjData.h"
 #include "stir/VoxelsOnCartesianGrid.h"
-#include "stir/ProjDataInfoCylindricalNoArcCorr.h"
+#include "stir/ProjDataInfoBlocksOnCylindricalNoArcCorr.h"
 
 START_NAMESPACE_STIR
 
@@ -118,7 +118,7 @@ public:
     inline int get_num_scatter_points() const
     { return static_cast<int>(this->scatt_points_vector.size());}
     //! Get the template ProjDataInfo
-    shared_ptr<const ProjDataInfoCylindricalNoArcCorr> get_template_proj_data_info_sptr() const;
+    shared_ptr<const ProjDataInfoBlocksOnCylindricalNoArcCorr> get_template_proj_data_info_sptr() const;
     //! Get the ExamInfo
     shared_ptr<const ExamInfo> get_exam_info_sptr() const;
 
@@ -349,7 +349,7 @@ protected:
 
     std::string template_proj_data_filename;
 
-    shared_ptr<ProjDataInfoCylindricalNoArcCorr> proj_data_info_cyl_noarc_cor_sptr;
+    shared_ptr<ProjDataInfoBlocksOnCylindricalNoArcCorr> proj_data_info_cyl_noarc_cor_sptr;
 
     //! \details Exam info extracted from the scanner template
     shared_ptr<ExamInfo> template_exam_info_sptr;

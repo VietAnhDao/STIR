@@ -710,7 +710,7 @@ set_output_proj_data_sptr(shared_ptr<ProjData> arg)
     this->output_proj_data_sptr = arg;
 }
 
-shared_ptr<const ProjDataInfoCylindricalNoArcCorr>
+shared_ptr<const ProjDataInfoBlocksOnCylindricalNoArcCorr>
 ScatterSimulation::
 get_template_proj_data_info_sptr() const
 {
@@ -739,7 +739,7 @@ void
 ScatterSimulation::set_template_proj_data_info(const ProjDataInfo& arg)
 {
     this->_already_set_up = false;
-    this->proj_data_info_cyl_noarc_cor_sptr.reset(dynamic_cast<ProjDataInfoCylindricalNoArcCorr* >(arg.clone()));
+    this->proj_data_info_cyl_noarc_cor_sptr.reset(dynamic_cast<ProjDataInfoBlocksOnCylindricalNoArcCorr* >(arg.clone()));
 
     if (is_null_ptr(this->proj_data_info_cyl_noarc_cor_sptr))
         error("ScatterSimulation: Can only handle non-arccorrected data");
