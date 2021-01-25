@@ -65,24 +65,4 @@ Ellipsoidal Cylinder Parameters:=
    END:=
 value := 0.096
 
-next shape:=
-
-shape type:= ellipsoidal cylinder
-Ellipsoidal Cylinder Parameters:=
-   radius-x (in mm) := 10
-   radius-y (in mm) := 10
-   length-z (in mm) := 50
-   ; optional start-end angles to define a wedge as opposed to a full cylinder
-   ; initial angle (in deg) :=10
-   ; final angle (in deg) :=90
-
-   ; next keyword can be used for non-default axes
-   ; values below are give a rotation around y for 90 degrees (swapping x and z)
-   ; Warning: this uses the STIR convention {z,y,x}
-   ; direction vectors (in mm):= { {0,0,1}, {0,-1,0}, {1,0,0}}
-   ; origin w.r.t. to standard STIR coordinate system (middle of first plane)
-   origin (in mm):={38, 19.931752267518, 28.465533028501}
-   END:=
-value := -0.096
-
 END:=

@@ -85,3 +85,7 @@ install_manifest.txt
 .cache
 *.idea
 *.user
+
+/test_scatter_BlocksOnCylindrical/object
+
+/src/include/plog

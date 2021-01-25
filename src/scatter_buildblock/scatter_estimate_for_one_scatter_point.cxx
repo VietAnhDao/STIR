@@ -28,6 +28,10 @@
 
 
 */
+
+#include <plog/Log.h> // Step1: include the headers
+//#include "plog/Initializers/RollingFileInitializer.h"
+
 #include "stir/scatter/SingleScatterSimulation.h"
 #include "stir/scatter/ScatterSimulation.h"
 #ifndef NDEBUG
@@ -72,6 +76,9 @@ SingleScatterSimulation::
                detector_coord_B - scatter_point));
   // note: costheta is identical for scatter to A or scatter to B
   // Hence, the Compton_cross_section and energy are identical for both cases as well.
+
+  //PLOGN << detector_coord_A.x() << "," << detector_coord_A.y() << "," << detector_coord_A.z() << "," << detector_coord_B.x() << "," << detector_coord_B.y() << "," << detector_coord_B.z() << "," << scatter_point.x() << "," << scatter_point.y() << "," << scatter_point.z() << "," << costheta;
+
   if(this->max_single_scatter_cos_angle>costheta)
     return 0;
   const float new_energy =
@@ -109,7 +116,6 @@ SingleScatterSimulation::
 
   const float scatter_point_mu=
     scatt_points_vector[scatter_point_num].mu_value;
-
 #ifndef NDEBUG
   {  
     // check if mu-value ok
@@ -134,8 +140,7 @@ SingleScatterSimulation::
     *atten_to_detB
     *atten_to_detA
     *scatter_point_mu
-    *detection_efficiency_scatter;
-                
+    *detection_efficiency_scatter;           
 
   const CartesianCoordinate3D<float> 
     detA_to_ring_center(0,-detector_coord_A[2],-detector_coord_A[3]);

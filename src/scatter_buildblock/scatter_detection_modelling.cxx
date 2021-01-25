@@ -29,7 +29,7 @@
 */
 
 #include "stir/scatter/ScatterSimulation.h"
-#include "stir/ProjDataInfoCylindricalNoArcCorr.h"
+#include "stir/ProjDataInfoBlocksOnCylindricalNoArcCorr.h"
 #include "stir/numerics/erf.h"
 #include "stir/info.h"
 #include <iostream>
@@ -84,6 +84,7 @@ find_detectors(unsigned& det_num_A, unsigned& det_num_B, const Bin& bin) const
   det_num_B =
     this->find_in_detection_points_vector(detector_coord_B + 
                                           this->shift_detector_coordinates_to_origin);
+  //std::cout << detector_coord_A << "\t" << detector_coord_B << "\n";
 }
 
 float

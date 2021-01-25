@@ -44,8 +44,8 @@ scatter_estimate(const Bin& bin)
   this->actual_scatter_estimate(scatter_ratio_singles,
 				det_num_A,
 				det_num_B);
-
- return scatter_ratio_singles;
+  //std::cout << det_num_A << "\t" << det_num_B << "\t" << this->find_detectors(det_num_A, det_num_B, bin) << "\t" << scatter_ratio_singles << "\n";
+  return scatter_ratio_singles;
 }
 
 
