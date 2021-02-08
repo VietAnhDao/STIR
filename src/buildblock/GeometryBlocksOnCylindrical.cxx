@@ -25,6 +25,9 @@ limitations under the License.
 
 */
 
+//#include <plog/Log.h> // Step1: include the headers
+//#include "plog/Initializers/RollingFileInitializer.h"
+
 #include "stir/DetectionPosition.h"
 #include "stir/CartesianCoordinate3D.h"
 #include "stir/Scanner.h"
@@ -142,6 +145,13 @@ void
 GeometryBlocksOnCylindrical::
 build_crystal_maps()
 {
+		enum // Define log instanceIds. Default is 0 and is omitted from this enum.
+	{
+		crystalMap = 1
+	};
+
+	plog::init<crystalMap>(plog::none, "log_BlocksOnCylindrical_crystal_map.csv", 1000000000, 2);
+	PLOGN_(crystalMap) << "# axial" << "\t" << "tangential" << "\t" << "radial"<< "\t" << "x" << "\t" << "y" << "\t" << "z"; 
 	// local variables to describe scanner
 	int num_axial_crystals_per_block = get_scanner_ptr()->get_num_axial_crystals_per_block();
 	int num_transaxial_crystals_per_block = get_scanner_ptr()->get_num_transaxial_crystals_per_block();
@@ -223,6 +233,7 @@ build_crystal_maps()
 			cart_coord.z() = (round(cart_coord.z()*1000.0F))/1000.0F;
 			cart_coord.y() = (round(cart_coord.y()*1000.0F))/1000.0F;
 			cart_coord.x() = (round(cart_coord.x()*1000.0F))/1000.0F;
+			//PLOGN_(crystalMap) << axial_coord << "\t" << tangential_coord << "\t" << radial_coord << "\t" << cart_coord.x() << "\t" << cart_coord.y() << "\t" << cart_coord.z();
 			cartesian_coord_map_given_detection_position_keys[det_pos] = cart_coord; //used to find s, m, phi, theta
 			detection_position_map_given_cartesian_coord_keys_3_decimal[cart_coord] = det_pos; //used to find bin from listmode data
 			cart_coord.z() = (round(cart_coord.z()*100.0F))/100.0F;

@@ -154,7 +154,7 @@ detection_efficiency_no_scatter(const unsigned det_num_A,
   if (!this->_already_set_up)
         error("ScatterSimulation::find_detectors: need to call set_up() first");
 #endif
-
+  
   if (detector_efficiency_no_scatter <= 0.F) // set to negative value by set_up(), so recompute
     {
       detector_efficiency_no_scatter =

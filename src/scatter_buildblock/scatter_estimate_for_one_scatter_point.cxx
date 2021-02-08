@@ -29,7 +29,7 @@
 
 */
 
-#include <plog/Log.h> // Step1: include the headers
+//#include <plog/Log.h> // Step1: include the headers
 //#include "plog/Initializers/RollingFileInitializer.h"
 
 #include "stir/scatter/SingleScatterSimulation.h"
@@ -77,8 +77,7 @@ SingleScatterSimulation::
   // note: costheta is identical for scatter to A or scatter to B
   // Hence, the Compton_cross_section and energy are identical for both cases as well.
 
-  //PLOGN << detector_coord_A.x() << "," << detector_coord_A.y() << "," << detector_coord_A.z() << "," << detector_coord_B.x() << "," << detector_coord_B.y() << "," << detector_coord_B.z() << "," << scatter_point.x() << "," << scatter_point.y() << "," << scatter_point.z() << "," << costheta;
-
+  //PLOGN << det_num_A << "," << det_num_B << "," << scatter_point_num << "," << detector_coord_A.x() << "," << detector_coord_A.y() << "," << detector_coord_A.z() << "," << detector_coord_B.x() << "," << detector_coord_B.y() << "," << detector_coord_B.z() << "," << scatter_point.x() << "," << scatter_point.y() << "," << scatter_point.z() << "," << costheta;
   if(this->max_single_scatter_cos_angle>costheta)
     return 0;
   const float new_energy =

@@ -26,8 +26,8 @@
   \author Kris Thielemans
 */
 
-#include <plog/Log.h> // Step1: include the headers
-#include "plog/Initializers/RollingFileInitializer.h"
+//#include <plog/Log.h> // Step1: include the headers
+//#include "plog/Initializers/RollingFileInitializer.h"
 
 #include "stir/scatter/ScatterSimulation.h"
 #include "stir/ViewSegmentNumbers.h"
@@ -225,7 +225,7 @@ ScatterSimulation::set_defaults()
 {
     this->attenuation_threshold =  0.01f ;
     // CHANGED THIS TO FALSE
-    this->randomly_place_scatter_points = false;
+    this->randomly_place_scatter_points = true;
     this->use_cache = true;
     this->zoom_xy = -1.f;
     this->zoom_z = -1.f;
@@ -323,8 +323,8 @@ Succeeded
 ScatterSimulation::
 set_up()
 {
-    plog::init(plog::none, "log_BlocksOnCylindrical_downsample_scanner.csv", 1000000000, 2);
-    PLOGN << "INIT";
+    //plog::init(plog::none, "log_BlocksOnCylindrical_scatter_coordinate.csv", 1000000000, 10);
+    //PLOGN << "detA,detB,scatter_num,detA_x,detA_y,detA_z,detB_x,detB_y,detB_z,scatter_x,scatter_y,scatter_z,costheta";
     if (is_null_ptr(proj_data_info_cyl_noarc_cor_sptr))
         error("ScatterSimulation: projection data info not set. Aborting.");
 
@@ -792,20 +792,21 @@ set_exam_info_sptr(const shared_ptr<const ExamInfo> arg)
 
 Succeeded
 ScatterSimulation::downsample_scanner(int new_num_rings, int new_num_dets)
-{
-    PLOGN << "[INPUT] number of rings: " << new_num_rings << ", number of detector: " << new_num_dets;
+{   
+    //std::cout << "--------------------------downsample scanner called!!------------------------------";
+    //PLOGN << "[INPUT] number of rings: " << new_num_rings << ", number of detector: " << new_num_dets;
     if (new_num_rings <= 0)
     {
 	if(downsample_scanner_rings > 0){
             new_num_rings = downsample_scanner_rings;
-            PLOGN << "[CHANGED] number of ring using downsample scanner ring: " << new_num_rings;
+            //PLOGN << "[CHANGED] number of ring using downsample scanner ring: " << new_num_rings;
         }
         else if (!is_null_ptr(proj_data_info_cyl_noarc_cor_sptr))
 	  {
 	    const float total_axial_length = proj_data_info_cyl_noarc_cor_sptr->get_scanner_sptr()->get_num_rings() *
 	      proj_data_info_cyl_noarc_cor_sptr->get_scanner_sptr()->get_ring_spacing();
 	    new_num_rings = round(total_axial_length / 20.F + 0.5F);
-        PLOGN << "[CHANGED] number of rings using axial length: " << new_num_rings;
+        //PLOGN << "[CHANGED] number of rings using axial length: " << new_num_rings;
 	  }
 	else
             return Succeeded::no;
@@ -814,7 +815,7 @@ ScatterSimulation::downsample_scanner(int new_num_rings, int new_num_dets)
     {
         if(downsample_scanner_dets > 0){
             new_num_dets = downsample_scanner_dets;
-            PLOGN << "[CHANGED] number of dets using downsample scanner dets: " << new_num_dets;
+            //PLOGN << "[CHANGED] number of dets using downsample scanner dets: " << new_num_dets;
         }
         else
             return Succeeded::no;
@@ -826,7 +827,7 @@ ScatterSimulation::downsample_scanner(int new_num_rings, int new_num_dets)
     // preserve the length of the scanner
     float scanner_length = new_scanner_sptr->get_num_rings()* new_scanner_sptr->get_ring_spacing();
 
-    PLOGN << "[ADDED] new scanner length: " << scanner_length;
+    //PLOGN << "[ADDED] new scanner length: " << scanner_length;
 
     new_scanner_sptr->set_num_rings(new_num_rings);
     new_scanner_sptr->set_num_detectors_per_ring(new_num_dets);
@@ -835,16 +836,16 @@ ScatterSimulation::downsample_scanner(int new_num_rings, int new_num_dets)
       old_scanner_ptr->get_max_num_non_arccorrected_bins() * 
       (float(new_num_dets) / old_scanner_ptr->get_num_detectors_per_ring())
       + 5; // add 5 to avoid strange edge-effects, certainly with B-splines
-    PLOGN << "[ADDED] non arccorrected bin: " << approx_num_non_arccorrected_bins;
+    //PLOGN << "[ADDED] non arccorrected bin: " << approx_num_non_arccorrected_bins;
     new_scanner_sptr->set_max_num_non_arccorrected_bins(round(approx_num_non_arccorrected_bins+.5F));
     new_scanner_sptr->set_default_bin_size(new_scanner_sptr->get_effective_ring_radius() * _PI / new_num_dets); // approx new detector size
-    PLOGN << "[ADDED] default bin size: " << new_scanner_sptr->get_effective_ring_radius() * _PI / new_num_dets;
+    //PLOGN << "[ADDED] default bin size: " << new_scanner_sptr->get_effective_ring_radius() * _PI / new_num_dets;
     // Find how much is the delta ring
     // If the previous projdatainfo had max segment == 1 then should be from SSRB
     // in ScatterEstimation. Otherwise use the max possible.
     int delta_ring = proj_data_info_cyl_noarc_cor_sptr->get_num_segments() == 1 ?  0 :
             new_scanner_sptr->get_num_rings()-1;
-    PLOGN << "[ADDED] delta ring: " << delta_ring;
+    //PLOGN << "[ADDED] delta ring: " << delta_ring;
     shared_ptr<ProjDataInfo> templ_proj_data_info_sptr(
                                                       ProjDataInfo::ProjDataInfoCTI(new_scanner_sptr,
                                                                                     1, delta_ring,
@@ -911,7 +912,7 @@ void
 ScatterSimulation::
 set_randomly_place_scatter_points(const bool arg)
 {
-    randomly_place_scatter_points = arg;
+    randomly_place_scatter_points = false;
     this->_already_set_up = false;
 }
 
