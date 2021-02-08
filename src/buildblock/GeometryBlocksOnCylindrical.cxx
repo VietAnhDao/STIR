@@ -150,8 +150,8 @@ build_crystal_maps()
 		crystalMap = 1
 	};
 
-	plog::init<crystalMap>(plog::none, "log_BlocksOnCylindrical_crystal_map.csv", 1000000000, 2);
-	PLOGN_(crystalMap) << "# axial" << "\t" << "tangential" << "\t" << "radial"<< "\t" << "x" << "\t" << "y" << "\t" << "z"; 
+	//plog::init<crystalMap>(plog::none, "log_BlocksOnCylindrical_crystal_map.csv", 1000000000, 2);
+	//PLOGN_(crystalMap) << "# axial" << "\t" << "tangential" << "\t" << "radial"<< "\t" << "x" << "\t" << "y" << "\t" << "z"; 
 	// local variables to describe scanner
 	int num_axial_crystals_per_block = get_scanner_ptr()->get_num_axial_crystals_per_block();
 	int num_transaxial_crystals_per_block = get_scanner_ptr()->get_num_transaxial_crystals_per_block();
