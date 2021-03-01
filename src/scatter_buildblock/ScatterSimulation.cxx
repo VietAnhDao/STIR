@@ -26,6 +26,22 @@
   \author Kris Thielemans
 */
 
+
+/* HOW TO IMPLEMENT BlocksOnCylindrical IN SCATTER
+
+To make Scatter work for BlocksOnCylindrical:
+
+    1.  change all files asociated with ScatterSimulation.cxx which has the key word "ProjDataInfoCylindricalNoArcCor"
+        to "ProjDataInfoBlocksOnCylindricalNoArcCorr".
+    2.  Change in the import "#include "stir/ProjDataInfoBlocksOnCylindricalNoArcCorr.h"" into import section of code.
+    3.  Change the intefile so the spacing between crystal in transaxial direction is "well spaced out" (meaning no
+        large gaps between blocks or buckets).
+    4.  Comment out two line at 408 & 409 preventing it to shift coordinate to center scanner in z-coordinate direction
+        since our crystal map for BlocksOnCylindrical is already centered in z-direction.
+
+*/
+
+
 //#include <plog/Log.h> // Step1: include the headers
 //#include "plog/Initializers/RollingFileInitializer.h"
 
@@ -323,7 +339,7 @@ Succeeded
 ScatterSimulation::
 set_up()
 {
-    //plog::init(plog::none, "log_BlocksOnCylindrical_scatter_coordinate.csv", 1000000000, 10);
+    //plog::init(plog::none, "log_BlocksOnCylindrical_scatter_coordinate.csv", 1000000000, 3);
     //PLOGN << "detA,detB,scatter_num,detA_x,detA_y,detA_z,detB_x,detB_y,detB_z,scatter_x,scatter_y,scatter_z,costheta";
     if (is_null_ptr(proj_data_info_cyl_noarc_cor_sptr))
         error("ScatterSimulation: projection data info not set. Aborting.");
@@ -390,8 +406,8 @@ set_up()
         assert(fabs(m_last + m_first) < m_last * 10E-4);
     }
 #endif
-    this->shift_detector_coordinates_to_origin =
-            CartesianCoordinate3D<float>(this->proj_data_info_cyl_noarc_cor_sptr->get_m(Bin(0, 0, 0, 0)), 0, 0);
+    //this->shift_detector_coordinates_to_origin =
+    ///        CartesianCoordinate3D<float>(this->proj_data_info_cyl_noarc_cor_sptr->get_m(Bin(0, 0, 0, 0)), 0, 0);
 
 #if 1
     // checks on image zooming to avvoid getting incorrect results
@@ -751,6 +767,17 @@ void
 ScatterSimulation::set_template_proj_data_info(const ProjDataInfo& arg)
 {
     this->_already_set_up = false;
+
+    // Check geometry of scanner of arg then set the template appropriately. 
+    if (arg.get_scanner_ptr()->get_scanner_geometry() == "Generic"){
+        
+    }else{
+        if (arg.get_scanner_ptr() -> get_scanner_geometry()=="Cylindrical"){
+
+        }else if (arg.get_scanner_ptr()->get_scanner_geometry()=="BlocksOnCylindrical"){
+
+        };
+    };
     this->proj_data_info_cyl_noarc_cor_sptr.reset(dynamic_cast<ProjDataInfoBlocksOnCylindricalNoArcCorr* >(arg.clone()));
 
     if (is_null_ptr(this->proj_data_info_cyl_noarc_cor_sptr))

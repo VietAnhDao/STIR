@@ -34,7 +34,9 @@
 #include "stir/RegisteredObject.h"
 #include "stir/ProjData.h"
 #include "stir/VoxelsOnCartesianGrid.h"
+#include "stir/ProjDataInfoCylindricalNoArcCorr.h"
 #include "stir/ProjDataInfoBlocksOnCylindricalNoArcCorr.h"
+#include "stir/ProjDataInfoGenericNoArcCorr.h"
 
 START_NAMESPACE_STIR
 
@@ -349,7 +351,10 @@ protected:
 
     std::string template_proj_data_filename;
 
+    // added extra classes for the geometry of scanner
     shared_ptr<ProjDataInfoBlocksOnCylindricalNoArcCorr> proj_data_info_cyl_noarc_cor_sptr;
+    shared_ptr<ProjDataInfoCylindricalNoArcCorr> proj_data_info_blk_noarc_cor_sptr;
+    shared_ptr<ProjDataInfoGenericNoArcCorr> proj_data_info_gen_noarc_cor_sptr;
 
     //! \details Exam info extracted from the scanner template
     shared_ptr<ExamInfo> template_exam_info_sptr;
