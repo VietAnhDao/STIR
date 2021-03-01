@@ -150,8 +150,8 @@ build_crystal_maps()
 		crystalMap = 1
 	};
 
-	plog::init<crystalMap>(plog::none, "log_BlocksOnCylindrical_crystal_map.csv", 1000000000, 2);
-	PLOGN_(crystalMap) << "# axial" << "\t" << "tangential" << "\t" << "radial"<< "\t" << "x" << "\t" << "y" << "\t" << "z"; 
+	//plog::init<crystalMap>(plog::none, "log_BlocksOnCylindrical_crystal_map.csv", 1000000000, 2);
+	//PLOGN_(crystalMap) << "# axial" << "\t" << "tangential" << "\t" << "radial"<< "\t" << "x" << "\t" << "y" << "\t" << "z"; 
 	// local variables to describe scanner
 	int num_axial_crystals_per_block = get_scanner_ptr()->get_num_axial_crystals_per_block();
 	int num_transaxial_crystals_per_block = get_scanner_ptr()->get_num_transaxial_crystals_per_block();
@@ -239,7 +239,7 @@ build_crystal_maps()
 			cart_coord.y() = (round(cart_coord.y()*100.0F))/100.0F;
 			cart_coord.x() = (round(cart_coord.x()*100.0F))/100.0F;
 			detection_position_map_given_cartesian_coord_keys_2_decimal[cart_coord] = det_pos;
-			PLOGN_(crystalMap) << axial_coord << "\t" << tangential_coord << "\t" << radial_coord << "\t" << cart_coord.x() << "\t" << cart_coord.y() << "\t" << cart_coord.z();
+			//PLOGN_(crystalMap) << axial_coord << "\t" << tangential_coord << "\t" << radial_coord << "\t" << cart_coord.x() << "\t" << cart_coord.y() << "\t" << cart_coord.z();
 			// added extra for crystal map to detect upto 1 decimal places using 2 decimal.
 			cart_coord.z() = (round(cart_coord.z()*10.0F))/10.0F;
 			cart_coord.y() = (round(cart_coord.y()*10.0F))/10.0F;

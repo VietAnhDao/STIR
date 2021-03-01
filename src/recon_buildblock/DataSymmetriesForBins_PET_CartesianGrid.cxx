@@ -372,7 +372,7 @@ DataSymmetriesForBins_PET_CartesianGrid
         this->do_symmetry_swap_s)
      {
        warning("Disabling all symmetries except for symmtery_z since they are not implemented in block geometry yet.");
-       this->do_symmetry_90degrees_min_phi =
+       //this->do_symmetry_90degrees_min_phi =
        this->do_symmetry_180degrees_min_phi =
        this->do_symmetry_swap_segment =
        this->do_symmetry_swap_s = false;
