@@ -25,9 +25,6 @@ limitations under the License.
 
 */
 
-//#include <plog/Log.h> // Step1: include the headers
-//#include "plog/Initializers/RollingFileInitializer.h"
-
 #include "stir/DetectionPosition.h"
 #include "stir/CartesianCoordinate3D.h"
 #include "stir/Scanner.h"
@@ -145,13 +142,6 @@ void
 GeometryBlocksOnCylindrical::
 build_crystal_maps()
 {
-		enum // Define log instanceIds. Default is 0 and is omitted from this enum.
-	{
-		crystalMap = 1
-	};
-
-	//plog::init<crystalMap>(plog::none, "log_BlocksOnCylindrical_crystal_map.csv", 1000000000, 2);
-	//PLOGN_(crystalMap) << "# axial" << "\t" << "tangential" << "\t" << "radial"<< "\t" << "x" << "\t" << "y" << "\t" << "z"; 
 	// local variables to describe scanner
 	int num_axial_crystals_per_block = get_scanner_ptr()->get_num_axial_crystals_per_block();
 	int num_transaxial_crystals_per_block = get_scanner_ptr()->get_num_transaxial_crystals_per_block();
@@ -166,7 +156,7 @@ build_crystal_maps()
 	std::string scanner_orientation = get_scanner_ptr()->get_scanner_orientation();
 
 	// check for the scanner orientation
-	if (scanner_orientation=="Y" || num_transaxial_buckets%4==0 )
+	if (scanner_orientation=="Y")
 	{/*Building starts from a bucket perpendicular to y axis, from its first crystal.
 		see start_x*/
 
@@ -207,7 +197,7 @@ build_crystal_maps()
 						tangential_coord += num_detectors_per_ring;
 
 			int axial_coord = ax_block_num*num_axial_crystals_per_block + ax_crys_num;
-			int radial_coord = 0;
+			int radial_coord = 0; 
 			stir::DetectionPosition<> det_pos(tangential_coord, axial_coord, radial_coord);
 
 			//calculate cartesion coordinate for a given detector
@@ -220,7 +210,7 @@ build_crystal_maps()
 			stir::Array<2, float> rotation_matrix = get_rotation_matrix(alpha);
 	 		// to match index range of CartesianCoordinate3D, which is 1 to 3
 			rotation_matrix.set_min_index(1);
-	    rotation_matrix[1].set_min_index(1);
+	    	rotation_matrix[1].set_min_index(1);
 			rotation_matrix[2].set_min_index(1);
 			rotation_matrix[3].set_min_index(1);
 
@@ -239,26 +229,19 @@ build_crystal_maps()
 			cart_coord.y() = (round(cart_coord.y()*100.0F))/100.0F;
 			cart_coord.x() = (round(cart_coord.x()*100.0F))/100.0F;
 			detection_position_map_given_cartesian_coord_keys_2_decimal[cart_coord] = det_pos;
-			//PLOGN_(crystalMap) << axial_coord << "\t" << tangential_coord << "\t" << radial_coord << "\t" << cart_coord.x() << "\t" << cart_coord.y() << "\t" << cart_coord.z();
-			// added extra for crystal map to detect upto 1 decimal places using 2 decimal.
-			cart_coord.z() = (round(cart_coord.z()*10.0F))/10.0F;
-			cart_coord.y() = (round(cart_coord.y()*10.0F))/10.0F;
-			cart_coord.x() = (round(cart_coord.x()*10.0F))/10.0F;
-			detection_position_map_given_cartesian_coord_keys_2_decimal[cart_coord] = det_pos;
 		}
 	}
-
 	else if (scanner_orientation=="X" )
-	{/*Building starts from a bucket perpendicular to x axis, from its first crystal.
-		 see start_y*/
+	{/*Building starts from a bucket perpendicular to y axis, from its first crystal.
+		see start_x*/
 
 		//calculate start_point to build the map.
 		float start_z = -1*(
 								((num_axial_blocks-1)/2.)*axial_block_spacing
 							+ ((num_axial_crystals_per_block-1)/2.)*axial_crystal_spacing
 											 );
-		float start_x = get_scanner_ptr()->get_effective_ring_radius();
-		float start_y = -1*(
+		float start_y = -1*get_scanner_ptr()->get_effective_ring_radius();
+		float start_x = -1*(
 								 ((num_transaxial_blocks_per_bucket-1)/2.)*transaxial_block_spacing
 							 + ((num_transaxial_crystals_per_block-1)/2.)*transaxial_crystal_spacing
 						 					 ); //the first crystal in the bucket
@@ -271,31 +254,44 @@ build_crystal_maps()
 						for (int trans_crys_num=0; trans_crys_num<num_transaxial_crystals_per_block; ++trans_crys_num)
 		{
 			// calculate detection position for a given detector
-			// note: in STIR convention, crystal(0,0,0) corresponds to (z=-l/2,y=-r,x=0)
-			int tangential_coord = trans_bucket_num*num_transaxial_blocks_per_bucket*num_transaxial_crystals_per_block
-												 	 + trans_block_num*num_transaxial_crystals_per_block
-												   + trans_crys_num;
+			// note: in STIR convention, crystal(0,0,0) corresponds to card_coord(z=-l/2,y=-r,x=0)
+			int tangential_coord;
+			if (num_transaxial_blocks_per_bucket%2==0)
+				tangential_coord = trans_bucket_num*num_transaxial_blocks_per_bucket*num_transaxial_crystals_per_block
+														 + trans_block_num*num_transaxial_crystals_per_block
+														 + trans_crys_num
+														 - num_transaxial_blocks_per_bucket*num_transaxial_crystals_per_block;
+			else
+				tangential_coord = trans_bucket_num*num_transaxial_blocks_per_bucket*num_transaxial_crystals_per_block
+													 	 + trans_block_num*num_transaxial_crystals_per_block
+													 	 + trans_crys_num
+														 - num_transaxial_blocks_per_bucket*num_transaxial_crystals_per_block;
+
+			if (tangential_coord<0)
+						tangential_coord += num_detectors_per_ring;
 
 			int axial_coord = ax_block_num*num_axial_crystals_per_block + ax_crys_num;
-			int radial_coord = 0;
+			int radial_coord = 0; 
 			stir::DetectionPosition<> det_pos(tangential_coord, axial_coord, radial_coord);
+
 			//calculate cartesion coordinate for a given detector
 			stir::CartesianCoordinate3D<float> transformation_matrix(
-								ax_block_num*axial_block_spacing + ax_crys_num*axial_crystal_spacing,
-								0.,
-								trans_block_num*transaxial_block_spacing + trans_crys_num*transaxial_crystal_spacing);
+										ax_block_num*axial_block_spacing + ax_crys_num*axial_crystal_spacing,
+										0.,
+										trans_block_num*transaxial_block_spacing + trans_crys_num*transaxial_crystal_spacing);
+			float alpha = trans_bucket_num*(2*_PI)/num_transaxial_buckets - _PI/num_transaxial_buckets;
 
-			float alpha = (trans_bucket_num - num_transaxial_buckets/4)
-										*(2*_PI)/num_transaxial_buckets;
+
 
 			stir::Array<2, float> rotation_matrix = get_rotation_matrix(alpha);
 	 		// to match index range of CartesianCoordinate3D, which is 1 to 3
 			rotation_matrix.set_min_index(1);
-	    rotation_matrix[1].set_min_index(1);
+	    	rotation_matrix[1].set_min_index(1);
 			rotation_matrix[2].set_min_index(1);
 			rotation_matrix[3].set_min_index(1);
 
-			stir::CartesianCoordinate3D<float> transformed_coord = start_point+transformation_matrix;
+			stir::CartesianCoordinate3D<float> transformed_coord =
+									start_point + transformation_matrix;
 			stir::CartesianCoordinate3D<float> cart_coord =
 									stir::matrix_multiply(rotation_matrix, transformed_coord);
 
