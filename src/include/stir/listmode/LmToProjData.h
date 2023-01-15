@@ -270,7 +270,7 @@ protected:
   //! Toggle readable output on stdout or actual projdata
   /*! corresponds to key "list event coordinates" */
   bool interactive;
-
+  bool print_crystal_map;
   shared_ptr<ProjDataInfo> template_proj_data_info_ptr;
   //! This will be used for pre-normalisation
   shared_ptr<BinNormalisation> normalisation_ptr;

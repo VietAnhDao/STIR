@@ -462,6 +462,25 @@ find_cartesian_coordinates_of_detection(
 
 void
 ProjDataInfoCylindricalNoArcCorr::
+print_detector_map() const
+{
+  for (size_t ring1 = 0; ring1 < get_scanner_ptr()->get_num_rings(); ring1++)
+    {
+      for (size_t det1 = 0; det1 < get_scanner_ptr()->get_num_detectors_per_ring()/2; det1++)
+      {
+            size_t det2 = det1 + get_scanner_ptr()->get_num_detectors_per_ring()/2;
+            CartesianCoordinate3D<float> coord_1;
+            CartesianCoordinate3D<float> coord_2;
+            find_cartesian_coordinates_given_scanner_coordinates(coord_1, coord_2, ring1, ring1, det1, det2);
+            printf("%4ld, %4ld, %4d, %4f, %4f, %4f\n", ring1, det1, 0, coord_1.x(), coord_1.y(), coord_1.z());
+            printf("%4ld, %4ld, %4d, %4f, %4f, %4f\n", ring1, det2, 0, coord_2.x(), coord_2.y(), coord_2.z());
+      }
+    }
+}
+
+
+void
+ProjDataInfoCylindricalNoArcCorr::
 find_cartesian_coordinates_given_scanner_coordinates (CartesianCoordinate3D<float>& coord_1,
 				 CartesianCoordinate3D<float>& coord_2,
 				 const int Ring_A,const int Ring_B, 

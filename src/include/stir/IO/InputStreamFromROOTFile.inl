@@ -161,6 +161,18 @@ InputStreamFromROOTFile::set_optional_ROOT_fields(bool val)
     read_optional_root_fields = val;
 }
 
+int
+InputStreamFromROOTFile::
+get_num_axial_layer_per_crystal() const
+{
+    return 5;
+}
+int
+InputStreamFromROOTFile::
+get_num_transaxial_layer_per_crystal() const
+{
+    return 5;
+}
 
 int
 InputStreamFromROOTFile::

@@ -24,7 +24,7 @@ InputStreamFromROOTFileForCylindricalPET::
 get_num_rings() const
 {
     return static_cast<int>( this->crystal_repeater_z * this->module_repeater_z *
-                             this->submodule_repeater_z);
+                             this->submodule_repeater_z * this->layer_repeater_z);
 }
 
 int
@@ -32,7 +32,7 @@ InputStreamFromROOTFileForCylindricalPET::
 get_num_dets_per_ring() const
 {
     return static_cast<int>(this->rsector_repeater * this->module_repeater_y *
-                            this->submodule_repeater_y * this->crystal_repeater_y);
+                            this->submodule_repeater_y * this->crystal_repeater_y * this->layer_repeater_z);
 }
 
 int
@@ -63,6 +63,8 @@ get_num_axial_crystals_per_singles_unit() const
     else if (this->singles_readout_depth == 3) // One PMT per submodule
         return this->crystal_repeater_z;
     else if (this->singles_readout_depth == 4) // One PMT per crystal
+        return this->layer_repeater_y;
+    else if (this->singles_readout_depth == 5)
         return 1;
     else
         error(boost::format("Singles readout depth (%1%) is invalid") % this->singles_readout_depth);
@@ -84,6 +86,8 @@ get_num_trans_crystals_per_singles_unit() const
     else if (this->singles_readout_depth == 3) // One PMT per submodule
         return this->crystal_repeater_y;
     else if (this->singles_readout_depth == 4) // One PMT per crystal
+        return this->layer_repeater_y;
+    else if (this->singles_readout_depth == 5)
         return 1;
     else
         error(boost::format("Singles readout depth (%1%) is invalid") % this->singles_readout_depth);

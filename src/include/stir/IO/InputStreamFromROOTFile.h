@@ -121,6 +121,10 @@ public:
     //! Get the transaxial number of crystals per module
     inline int get_num_transaxial_crystals_per_block_v() const;
 
+    inline int get_num_axial_layer_per_crystal() const;
+
+    inline int get_num_transaxial_layer_per_crystal() const;
+
     virtual int get_num_axial_crystals_per_singles_unit() const = 0;
 
     virtual int get_num_trans_crystals_per_singles_unit() const = 0;

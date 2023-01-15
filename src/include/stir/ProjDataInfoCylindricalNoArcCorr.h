@@ -267,6 +267,8 @@ public:
 					       CartesianCoordinate3D<float>& coord_2,
 					       const Bin& bin) const;
 
+  void print_detector_map() const;
+
   void find_cartesian_coordinates_given_scanner_coordinates (CartesianCoordinate3D<float>& coord_1,
 							     CartesianCoordinate3D<float>& coord_2,
 							     const int Ring_A,const int Ring_B, 

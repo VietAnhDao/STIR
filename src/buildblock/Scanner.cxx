@@ -554,6 +554,68 @@ break;
             );  
   break;
 
+   /*
+  case Quadra: 
+  // Teimoorisichani M, Panin V, Rothfuss H, Sari H, Rominger A, Conti M. A CT-less approach to quantitative PET imaging using the LSO intrinsic radiation for long-axial FOV PET scanners. Med Phys. 2022 Jan;49(1):309-323. doi: 10.1002/mp.15376. Epub 2021 Dec 10. PMID: 34818446; PMCID: PMC9299938.
+  set_params(Quadra, string_list("Quadra"), 
+             320, //num_rings_v
+             380, //max_num_non_arccorrected_bins_v,
+             380, //default_num_arccorrected_bins_v,
+             760, //num_detectors_per_ring_v    
+             350, //  inner_ring_radius_v
+             10, //average_depth_of_interaction_v
+             3.2, //ring_spacing_v
+             1.6, //bin_size_v
+             0, //intrinsic_tilt_v
+             1, //num_axial_blocks_per_bucket_v
+             2, //num_transaxial_blocks_per_bucket_v
+             10, //num_axial_crystals_per_block_v
+             10, //num_transaxial_crystals_per_block_v
+             1, //num_axial_crystals_per_singles_unit_v
+             1, //num_transaxial_crystals_per_singles_unit_v
+             1, //num_detector_layers_v
+             -1, //energy_resolution_v
+             -1, //reference_energy_v
+             "Cylindrical", //scanner_geometry_v
+             3.2, //axial_crystal_spacing_v
+             3.2, //transaxial_crystal_spacing_v
+             16.2, //axial_block_spacing_v
+             16.2, //transaxial_block_spacing_v
+             ""//crystal_map_file_name_v
+            );  
+  break;
+  */
+
+  case Vision: 
+  // Teimoorisichani M, Panin V, Rothfuss H, Sari H, Rominger A, Conti M. A CT-less approach to quantitative PET imaging using the LSO intrinsic radiation for long-axial FOV PET scanners. Med Phys. 2022 Jan;49(1):309-323. doi: 10.1002/mp.15376. Epub 2021 Dec 10. PMID: 34818446; PMCID: PMC9299938.
+  set_params(Vision, string_list("Vision"), 
+             80, //num_rings_v 
+             500, //max_num_non_arccorrected_bins_v, 
+             500, //default_num_arccorrected_bins_v,
+             760, //num_detectors_per_ring_v    
+             390, //  inner_ring_radius_v
+             10, //average_depth_of_interaction_v 
+             3.2, //ring_spacing_v 
+             1.6, //bin_size_v
+             0, //intrinsic_tilt_v
+             1, //num_axial_blocks_per_bucket_v
+             2, //num_transaxial_blocks_per_bucket_v
+             2, //num_axial_crystals_per_block_v
+             2, //num_transaxial_crystals_per_block_v
+             5, //num_axial_crystals_per_singles_unit_v
+             5, //num_transaxial_crystals_per_singles_unit_v
+             1, //num_detector_layers_v
+             -1, //energy_resolution_v
+             -1, //reference_energy_v
+             "Cylindrical", //scanner_geometry_v
+             3.2, //axial_crystal_spacing_v
+             3.2, //transaxial_crystal_spacing_v
+             16.2, //axial_block_spacing_v
+             16.2, //transaxial_block_spacing_v
+             ""//crystal_map_file_name_v
+            );  
+  break;
+
   case UPENN_5rings:
     set_params(UPENN_5rings, string_list("UPENN_5rings"),
                (40+16)*5,

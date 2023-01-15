@@ -255,49 +255,49 @@ check_scanner_match_geometry(std::string& ret, const shared_ptr<Scanner>& scanne
 
     if (scanner_sptr->get_num_rings() != root_file_sptr->get_num_rings())
     {
-        stream << "the number of rings, ";
+        stream << "\nthe number of rings of hroot is: " << root_file_sptr->get_num_rings() << ", while the interfile is: " << scanner_sptr->get_num_rings() << "\n";
         ok = false;
     }
 
     if (scanner_sptr->get_num_detectors_per_ring() != root_file_sptr->get_num_dets_per_ring())
     {
-        stream << "the number of detector per ring, ";
+        stream << "\nthe number of detector per ring because the number of detector per ring in the hroot header:  " << root_file_sptr->get_num_dets_per_ring() << ", while inerfile header is: " << scanner_sptr->get_num_detectors_per_ring() << "\n";
         ok = false;
     }
 
     if (scanner_sptr->get_num_axial_blocks_per_bucket() != root_file_sptr->get_num_axial_blocks_per_bucket_v())
     {
-        stream << "the number of axial blocks per bucket, ";
+        stream << "\nthe number of axial blocks per bucket because the number of axial blocks per bucket in hroot header is: "<< root_file_sptr->get_num_axial_blocks_per_bucket_v() << ", while interfile header is: "<< scanner_sptr->get_num_axial_blocks_per_bucket() << "\n";
         ok = false;
     }
 
     if(scanner_sptr->get_num_transaxial_blocks_per_bucket() != root_file_sptr->get_num_transaxial_blocks_per_bucket_v())
     {
-        stream << "the number of transaxial blocks per bucket, ";
+        stream << "\nthe number of transaxial blocks per bucket for hroot is: " << root_file_sptr->get_num_transaxial_blocks_per_bucket_v() << ", while interfile header is: "<< scanner_sptr->get_num_transaxial_blocks_per_bucket() << "\n";
         ok = false;
     }
 
     if(scanner_sptr->get_num_axial_crystals_per_block() != root_file_sptr->get_num_axial_crystals_per_block_v())
     {
-        stream << "the number of axial crystals per block, ";
+        stream << "\nthe number of axial crystals per block per bucket for hroot is:  " << root_file_sptr->get_num_axial_crystals_per_block_v() << ", while the interfile header is: " << scanner_sptr->get_num_axial_crystals_per_block() << "\n";
         ok = false;
     }
 
     if(scanner_sptr->get_num_transaxial_crystals_per_block() != root_file_sptr->get_num_transaxial_crystals_per_block_v())
     {
-        stream << "the number of transaxial crystals per block, ";
+        stream << "\nthe number of transaxial crystals per block for hroot is: " << root_file_sptr->get_num_transaxial_crystals_per_block_v() << ", while interfile is: " << scanner_sptr->get_num_transaxial_crystals_per_block() << "\n";
         ok = false;
     }
 
     if(scanner_sptr->get_num_axial_crystals_per_singles_unit() != root_file_sptr->get_num_axial_crystals_per_singles_unit())
     {
-        stream << "the number of axial crystals per singles unit, ";
+        stream << "\nthe number of axial crystals per singles unit in hroot is: " << root_file_sptr->get_num_axial_crystals_per_singles_unit()<< ", while interfile is: " << scanner_sptr->get_num_axial_crystals_per_singles_unit() << "\n";
         ok = false;
     }
 
     if(scanner_sptr->get_num_transaxial_crystals_per_singles_unit() != root_file_sptr->get_num_trans_crystals_per_singles_unit())
     {
-        stream << "the number of transaxial crystals per singles unit, ";
+        stream << "\nthe number of transaxial crystals per singles unit for hroot is: " << root_file_sptr->get_num_trans_crystals_per_singles_unit() << ", while the interfile is: " << scanner_sptr->get_num_transaxial_crystals_per_singles_unit() << "\n";
         ok = false;
     }
 

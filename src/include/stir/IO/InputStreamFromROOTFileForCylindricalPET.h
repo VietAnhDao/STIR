@@ -137,6 +137,8 @@ protected:
 
     //! \name TBranches for Cylindrical PET
     //@{
+    TBranch *br_layerID1 = nullptr;
+    TBranch *br_layerID2 = nullptr;
     TBranch *br_crystalID1 = nullptr;
     TBranch *br_crystalID2 = nullptr;
     TBranch *br_submoduleID1 = nullptr;
@@ -149,12 +151,15 @@ protected:
 
     //! \name ROOT Variables, i.e. to hold data from each entry.
     //@{
+    std::int32_t layerID1, layerID2;
     std::int32_t crystalID1, crystalID2;
     std::int32_t submoduleID1, submoduleID2;
     std::int32_t moduleID1, moduleID2;
     std::int32_t rsectorID1, rsectorID2;
     //@}
-
+    int layer_repeater_x;
+    int layer_repeater_y;
+    int layer_repeater_z;
     int submodule_repeater_x;
     int submodule_repeater_y;
     int submodule_repeater_z;

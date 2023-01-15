@@ -87,6 +87,9 @@ get_next_record(CListRecordROOT& record)
       GetEntryCheck(br_time2->GetEntry(brentry));
 
       // Get positional ID information
+      GetEntryCheck(br_layerID1->GetEntry(brentry));
+      GetEntryCheck(br_layerID2->GetEntry(brentry));  
+
       GetEntryCheck(br_crystalID1->GetEntry(brentry));
       GetEntryCheck(br_crystalID2->GetEntry(brentry));
 
@@ -102,23 +105,27 @@ get_next_record(CListRecordROOT& record)
       break;
     }
 
-    ring1 = static_cast<int>(crystalID1/crystal_repeater_y)
-            + static_cast<int>(submoduleID1/submodule_repeater_y)*get_num_axial_crystals_per_block_v()
-            + static_cast<int>(moduleID1/module_repeater_y)*submodule_repeater_z*get_num_axial_crystals_per_block_v();
+    ring1 = + static_cast<int>(layerID1/layer_repeater_y);
+            + static_cast<int>(crystalID1/crystal_repeater_y) * layer_repeater_z
+            + static_cast<int>(submoduleID1/submodule_repeater_y)*get_num_axial_crystals_per_block_v() * layer_repeater_z
+            + static_cast<int>(moduleID1/module_repeater_y)*submodule_repeater_z*get_num_axial_crystals_per_block_v() * layer_repeater_z;
 
-    ring2 = static_cast<int>(crystalID2/crystal_repeater_y)
-            + static_cast<int>(submoduleID2/submodule_repeater_y)*get_num_axial_crystals_per_block_v()
-            + static_cast<int>(moduleID2/module_repeater_y)*submodule_repeater_z*get_num_axial_crystals_per_block_v();
+    ring2 = static_cast<int>(layerID2/layer_repeater_y)
+            + static_cast<int>(crystalID2/crystal_repeater_y) * layer_repeater_z
+            + static_cast<int>(submoduleID2/submodule_repeater_y)*get_num_axial_crystals_per_block_v() * layer_repeater_z
+            + static_cast<int>(moduleID2/module_repeater_y)*submodule_repeater_z*get_num_axial_crystals_per_block_v() * layer_repeater_z;
 
-    crystal1 = rsectorID1  * module_repeater_y * submodule_repeater_y * get_num_transaxial_crystals_per_block_v()
-            + (moduleID1%module_repeater_y) * submodule_repeater_y * get_num_transaxial_crystals_per_block_v()
-            + (submoduleID1%submodule_repeater_y) * get_num_transaxial_crystals_per_block_v()
-            + (crystalID1%crystal_repeater_y);
+    crystal1 = rsectorID1  * module_repeater_y * submodule_repeater_y * get_num_transaxial_crystals_per_block_v() * layer_repeater_y
+            + (moduleID1%module_repeater_y) * submodule_repeater_y * get_num_transaxial_crystals_per_block_v() * layer_repeater_y
+            + ((1-submoduleID1)%submodule_repeater_y) * get_num_transaxial_crystals_per_block_v() * layer_repeater_y
+            + ((3-crystalID1)%crystal_repeater_y) * layer_repeater_y
+            + ((24-layerID1)%layer_repeater_y);
 
-    crystal2 = rsectorID2 * module_repeater_y * submodule_repeater_y * get_num_transaxial_crystals_per_block_v()
-            + (moduleID2%module_repeater_y) * submodule_repeater_y * get_num_transaxial_crystals_per_block_v()
-            + (submoduleID2% submodule_repeater_y) * get_num_transaxial_crystals_per_block_v()
-            + (crystalID2%crystal_repeater_y);
+    crystal2 = rsectorID2 * module_repeater_y * submodule_repeater_y * get_num_transaxial_crystals_per_block_v() * layer_repeater_y
+            + (moduleID2%module_repeater_y) * submodule_repeater_y * get_num_transaxial_crystals_per_block_v() * layer_repeater_y
+            + ((1-submoduleID2)% submodule_repeater_y) * get_num_transaxial_crystals_per_block_v() * layer_repeater_y
+            + ((3-crystalID2)%crystal_repeater_y) * layer_repeater_y
+            + ((24-layerID2)%layer_repeater_y);
 
     // GATE counts crystal ID =0 the most negative. Therefore
     // ID = 0 should be negative, in Rsector 0 and the mid crystal ID be 0 .
@@ -155,6 +162,9 @@ void
 InputStreamFromROOTFileForCylindricalPET::set_defaults()
 {
     base_type::set_defaults();
+    layer_repeater_x = 1;
+    layer_repeater_y = 1;
+    layer_repeater_z = 1;
     submodule_repeater_x = -1;
     submodule_repeater_y = -1;
     submodule_repeater_z = -1;
@@ -185,6 +195,12 @@ InputStreamFromROOTFileForCylindricalPET::initialise_keymap()
     this->parser.add_key("number of submodules X", &this->submodule_repeater_x);
     this->parser.add_key("number of submodules Y", &this->submodule_repeater_y);
     this->parser.add_key("number of submodules Z", &this->submodule_repeater_z);
+    this->parser.add_key("number of crystal X", &this->crystal_repeater_x);
+    this->parser.add_key("number of crystal Y", &this->crystal_repeater_y);
+    this->parser.add_key("number of crystal Z", &this->crystal_repeater_z);
+    this->parser.add_key("number of layer X", &this->layer_repeater_x);
+    this->parser.add_key("number of layer Y", &this->layer_repeater_y);
+    this->parser.add_key("number of layer Z", &this->layer_repeater_z);
 }
 
 bool InputStreamFromROOTFileForCylindricalPET::
@@ -208,7 +224,8 @@ set_up(const std::string & header_path)
         warning(missing_keywords.c_str());
         return Succeeded::no;
     }
-
+    stream_ptr->SetBranchAddress("layerID1", &layerID1, &br_layerID1);
+    stream_ptr->SetBranchAddress("layerID2", &layerID2, &br_layerID2);
     stream_ptr->SetBranchAddress("crystalID1",&crystalID1, &br_crystalID1);
     stream_ptr->SetBranchAddress("crystalID2",&crystalID2, &br_crystalID2);
     stream_ptr->SetBranchAddress("submoduleID1",&submoduleID1, &br_submoduleID1);
@@ -219,6 +236,7 @@ set_up(const std::string & header_path)
     stream_ptr->SetBranchAddress("rsectorID2",&rsectorID2, &br_rsectorID2);
 
     nentries = static_cast<unsigned long int>(stream_ptr->GetEntries());
+    printf("number of entries in root files is: %4d",nentries);
     if (nentries == 0)
         error("InputStreamFromROOTFileForCylindricalPET: The total number of entries in the ROOT file is zero. Abort.");
 

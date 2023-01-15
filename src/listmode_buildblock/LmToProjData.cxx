@@ -247,6 +247,7 @@ set_defaults()
   store_prompts = true;
   store_delayeds = true;
   interactive=false;
+  print_crystal_map=false;
   num_segments_in_memory = -1;
   normalisation_ptr.reset(new TrivialBinNormalisation);
   post_normalisation_ptr.reset(new TrivialBinNormalisation);
@@ -280,6 +281,7 @@ initialise_keymap()
     //parser.add_key("increment to use for 'delayeds'",&delayed_increment);
   }
   parser.add_key("List event coordinates",&interactive);
+  parser.add_key("print crystal map",&print_crystal_map);
   parser.add_stop_key("END");  
 
 }
@@ -611,6 +613,17 @@ process_data()
   template_proj_data_info_ptr->set_bed_position_vertical
     (lm_data_ptr->get_proj_data_info_sptr()->get_bed_position_vertical());
 
+  if(print_crystal_map){
+    shared_ptr<Scanner> scanner_sptr(new Scanner(*template_proj_data_info_ptr->get_scanner_sptr()));
+    ProjDataInfoCylindricalNoArcCorr* proj_cyl = dynamic_cast<ProjDataInfoCylindricalNoArcCorr *>(
+                      ProjDataInfo::ProjDataInfoCTI(scanner_sptr, 
+                            1, scanner_sptr->get_num_rings()-1,
+                            scanner_sptr->get_num_detectors_per_ring()/2,
+                            scanner_sptr->get_default_num_arccorrected_bins(), 
+                            false));
+    proj_cyl->print_detector_map();
+  }
+
   // a few more checks, now that we have the lm_data_ptr
   {
     Scanner const * const scanner_ptr = 
@@ -812,9 +825,8 @@ process_data()
 			     if (num_stored_events%500000L==0) cout << "\r" << num_stored_events << " events stored" << flush;
                             
 			     if (interactive)
-			       printf("Seg %4d view %4d ax_pos %4d tang_pos %4d time %8g stored with incr %d \n", 
-				      bin.segment_num(), bin.view_num(), bin.axial_pos_num(), bin.tangential_pos_num(),
-				      current_time, event_increment);
+			      printf("bin tan num %4d out_proj min tan num %4d out_proj max tan num %4d bin ax num %4d out_proj min ax num %4d out_proj max ax num %4d Seg %4d view %4d ax_pos %4d tang_pos %4d time %8g ignored\n", 
+				  bin.tangential_pos_num(), output_proj_data_sptr->get_min_tangential_pos_num(), output_proj_data_sptr->get_max_tangential_pos_num(), bin.axial_pos_num(), output_proj_data_sptr->get_min_axial_pos_num(bin.segment_num()), output_proj_data_sptr->get_max_axial_pos_num(bin.segment_num()), bin.segment_num(), bin.view_num(), bin.axial_pos_num(), bin.tangential_pos_num(), current_time);
 			     else
 			       (*segments[bin.segment_num()])[bin.view_num()][bin.axial_pos_num()][bin.tangential_pos_num()] += 
 			       bin.get_bin_value() * 
