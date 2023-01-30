@@ -105,7 +105,7 @@ get_next_record(CListRecordROOT& record)
       break;
     }
 
-    ring1 = + static_cast<int>(layerID1/layer_repeater_y);
+    ring1 = + static_cast<int>(layerID1/layer_repeater_y)
             + static_cast<int>(crystalID1/crystal_repeater_y) * layer_repeater_z
             + static_cast<int>(submoduleID1/submodule_repeater_y)*get_num_axial_crystals_per_block_v() * layer_repeater_z
             + static_cast<int>(moduleID1/module_repeater_y)*submodule_repeater_z*get_num_axial_crystals_per_block_v() * layer_repeater_z;
