@@ -8,6 +8,7 @@
     See STIR/LICENSE.txt for details
 */
 #include "stir/IO/InputStreamFromROOTFileForCylindricalPET.h"
+#include "stir/RootDetectorMap.h"
 #include <TChain.h>
 
 START_NAMESPACE_STIR
@@ -104,8 +105,9 @@ get_next_record(CListRecordROOT& record)
 
       break;
     }
+    RootDetectorMap testObj;
 
-    ring1 = + static_cast<int>(layerID1/layer_repeater_y);
+    ring1 = + static_cast<int>(layerID1/layer_repeater_y)
             + static_cast<int>(crystalID1/crystal_repeater_y) * layer_repeater_z
             + static_cast<int>(submoduleID1/submodule_repeater_y)*get_num_axial_crystals_per_block_v() * layer_repeater_z
             + static_cast<int>(moduleID1/module_repeater_y)*submodule_repeater_z*get_num_axial_crystals_per_block_v() * layer_repeater_z;
@@ -201,6 +203,7 @@ InputStreamFromROOTFileForCylindricalPET::initialise_keymap()
     this->parser.add_key("number of layer X", &this->layer_repeater_x);
     this->parser.add_key("number of layer Y", &this->layer_repeater_y);
     this->parser.add_key("number of layer Z", &this->layer_repeater_z);
+    //this->parser.add_key("detector map", &this->detector_map_name);
 }
 
 bool InputStreamFromROOTFileForCylindricalPET::

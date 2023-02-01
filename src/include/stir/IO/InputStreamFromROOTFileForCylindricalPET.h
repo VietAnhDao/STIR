@@ -167,6 +167,7 @@ protected:
     int module_repeater_y;
     int module_repeater_z;
     int rsector_repeater;
+    std::string detector_map_name;
 
     //! In GATE, inside a block, the indeces start from the lower
     //! unit counting upwards. Therefore in order to align the
