@@ -26,7 +26,6 @@
 #include "stir/Succeeded.h"
 #include "stir/listmode/CListRecordROOT.h"
 #include "stir/RegisteredObject.h"
-
 // forward declaration of ROOT's TChain
 class TChain;
 class TBranch;

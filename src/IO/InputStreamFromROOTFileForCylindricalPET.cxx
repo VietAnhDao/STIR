@@ -8,7 +8,6 @@
     See STIR/LICENSE.txt for details
 */
 #include "stir/IO/InputStreamFromROOTFileForCylindricalPET.h"
-#include "stir/RootDetectorMap.h"
 #include <TChain.h>
 
 START_NAMESPACE_STIR
@@ -82,7 +81,6 @@ get_next_record(CListRecordROOT& record)
       if (!this->check_brentry_randoms_scatter_energy_conditions(brentry))
         continue;
 
-
       // Get time information
       GetEntryCheck(br_time1->GetEntry(brentry));
       GetEntryCheck(br_time2->GetEntry(brentry));
@@ -105,9 +103,9 @@ get_next_record(CListRecordROOT& record)
 
       break;
     }
-    RootDetectorMap testObj;
 
-    ring1 = + static_cast<int>(layerID1/layer_repeater_y)
+    if(detector_map_name==""){
+    ring1 = static_cast<int>(layerID1/layer_repeater_y)
             + static_cast<int>(crystalID1/crystal_repeater_y) * layer_repeater_z
             + static_cast<int>(submoduleID1/submodule_repeater_y)*get_num_axial_crystals_per_block_v() * layer_repeater_z
             + static_cast<int>(moduleID1/module_repeater_y)*submodule_repeater_z*get_num_axial_crystals_per_block_v() * layer_repeater_z;
@@ -128,7 +126,26 @@ get_next_record(CListRecordROOT& record)
             + ((1-submoduleID2)% submodule_repeater_y) * get_num_transaxial_crystals_per_block_v() * layer_repeater_y
             + ((3-crystalID2)%crystal_repeater_y) * layer_repeater_y
             + ((24-layerID2)%layer_repeater_y);
-
+    }else{
+        try
+        {
+            std::vector<int> rootID1 = {rsectorID1, moduleID1, submoduleID1, crystalID1, layerID1};
+            std::vector<int> rootID2 = {rsectorID2, moduleID2, submoduleID2, crystalID2, layerID2};
+            std::vector<int> detID1 = {0,0};
+            detID1 = root_to_detector_map.get_ring_crystal_from_map(rootID1);
+            std::vector<int> detID2 = {0,0};
+            detID2 = root_to_detector_map.get_ring_crystal_from_map(rootID2);
+            ring1 = detID1[0];
+            crystal1 = detID1[1];
+            ring2 = detID2[0];
+            crystal2 = detID2[1];
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+        }
+        
+    }
     // GATE counts crystal ID =0 the most negative. Therefore
     // ID = 0 should be negative, in Rsector 0 and the mid crystal ID be 0 .
 #ifdef STIR_ROOT_ROTATION_AS_V4
@@ -174,6 +191,8 @@ InputStreamFromROOTFileForCylindricalPET::set_defaults()
     module_repeater_y = -1;
     module_repeater_z = -1;
     rsector_repeater = -1;
+    detector_map_name = "";
+    vec_module_name = {};
 #ifdef STIR_ROOT_ROTATION_AS_V4
     half_block = module_repeater_y * submodule_repeater_y * crystal_repeater_y / 2  - 1;
     if (half_block < 0 )
@@ -203,7 +222,9 @@ InputStreamFromROOTFileForCylindricalPET::initialise_keymap()
     this->parser.add_key("number of layer X", &this->layer_repeater_x);
     this->parser.add_key("number of layer Y", &this->layer_repeater_y);
     this->parser.add_key("number of layer Z", &this->layer_repeater_z);
-    //this->parser.add_key("detector map", &this->detector_map_name);
+    // possible to add vectorised key i.e. {a,b,c} or larger. of course this is ordered.
+    this->parser.add_key("root to detector map", &this->detector_map_name);
+    this->parser.add_key("gate module", &this->vec_module_name);
 }
 
 bool InputStreamFromROOTFileForCylindricalPET::
@@ -237,12 +258,14 @@ set_up(const std::string & header_path)
     stream_ptr->SetBranchAddress("moduleID2",&moduleID2, &br_moduleID2);
     stream_ptr->SetBranchAddress("rsectorID1",&rsectorID1, &br_rsectorID1);
     stream_ptr->SetBranchAddress("rsectorID2",&rsectorID2, &br_rsectorID2);
-
+    RootDetectorMap rootDetMap;
+    rootDetMap.set_col_split(vec_module_name.size());
+    rootDetMap.load_detectormap_from_file(detector_map_name);
+    root_to_detector_map = rootDetMap;
     nentries = static_cast<unsigned long int>(stream_ptr->GetEntries());
-    printf("number of entries in root files is: %4d",nentries);
+    printf("number of entries in root files is: %4d\n",nentries);
     if (nentries == 0)
         error("InputStreamFromROOTFileForCylindricalPET: The total number of entries in the ROOT file is zero. Abort.");
-
     return Succeeded::yes;
 }
 
@@ -251,6 +274,7 @@ check_all_required_keywords_are_set(std::string& ret) const
 {
     std::ostringstream stream("InputStreamFromROOTFileForCylindricalPET: Required keywords are missing! Check: ");
     bool ok = true;
+    if (detector_map_name == ""){
 
     if (crystal_repeater_x == -1)
     {
@@ -311,7 +335,18 @@ check_all_required_keywords_are_set(std::string& ret) const
         stream << "crystal_repeater_x, ";
         ok = false;
     }
-
+    }else{
+    //std::cout << "detector map name: " << this->detector_map_name << "\n";
+    if (vec_module_name.empty()){
+        stream << "gate module is empty create a vector of modules e.g. 'gate module: {rsector, module, submodule, crystal}'";
+        ok = false;
+    }
+    //for (std::string det_name : this->vec_module_name)
+    //{
+    //    std::cout << det_name << ", ";
+    //}
+    //std::cout << "\n";
+    }
     if (!ok)
         ret = stream.str();
 

@@ -18,9 +18,9 @@
 
 #ifndef __stir_IO_InputStreamFromROOTFileForCylindricalPET_H__
 #define __stir_IO_InputStreamFromROOTFileForCylindricalPET_H__
-
 #include "stir/IO/InputStreamFromROOTFile.h"
 #include "stir/RegisteredParsingObject.h"
+#include "stir/RootDetectorMap.h"
 
 START_NAMESPACE_STIR
 
@@ -167,7 +167,16 @@ protected:
     int module_repeater_y;
     int module_repeater_z;
     int rsector_repeater;
+    // variable to load custom detector map and module name
     std::string detector_map_name;
+    std::vector<std::string> vec_module_name;
+    //vector to store TBranch
+    std::vector<TBranch *> vec_brID1 = {};
+    std::vector<TBranch *> vec_brID2 = {};
+    // vector to store all the data
+    std::vector<std::int32_t> vec_valID1 = {};
+    std::vector<std::int32_t> vec_valID2 = {};
+    RootDetectorMap root_to_detector_map;
 
     //! In GATE, inside a block, the indeces start from the lower
     //! unit counting upwards. Therefore in order to align the
