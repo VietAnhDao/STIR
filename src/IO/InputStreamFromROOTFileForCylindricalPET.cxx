@@ -117,15 +117,15 @@ get_next_record(CListRecordROOT& record)
 
     crystal1 = rsectorID1  * module_repeater_y * submodule_repeater_y * get_num_transaxial_crystals_per_block_v() * layer_repeater_y
             + (moduleID1%module_repeater_y) * submodule_repeater_y * get_num_transaxial_crystals_per_block_v() * layer_repeater_y
-            + ((1-submoduleID1)%submodule_repeater_y) * get_num_transaxial_crystals_per_block_v() * layer_repeater_y
-            + ((3-crystalID1)%crystal_repeater_y) * layer_repeater_y
-            + ((24-layerID1)%layer_repeater_y);
+            + (submoduleID1%submodule_repeater_y) * get_num_transaxial_crystals_per_block_v() * layer_repeater_y
+            + (crystalID1%crystal_repeater_y) * layer_repeater_y
+            + (layerID1%layer_repeater_y);
 
     crystal2 = rsectorID2 * module_repeater_y * submodule_repeater_y * get_num_transaxial_crystals_per_block_v() * layer_repeater_y
             + (moduleID2%module_repeater_y) * submodule_repeater_y * get_num_transaxial_crystals_per_block_v() * layer_repeater_y
-            + ((1-submoduleID2)% submodule_repeater_y) * get_num_transaxial_crystals_per_block_v() * layer_repeater_y
-            + ((3-crystalID2)%crystal_repeater_y) * layer_repeater_y
-            + ((24-layerID2)%layer_repeater_y);
+            + (submoduleID2% submodule_repeater_y) * get_num_transaxial_crystals_per_block_v() * layer_repeater_y
+            + (crystalID2%crystal_repeater_y) * layer_repeater_y
+            + (layerID2%layer_repeater_y);
     }else{
         try
         {
@@ -192,7 +192,6 @@ InputStreamFromROOTFileForCylindricalPET::set_defaults()
     module_repeater_z = -1;
     rsector_repeater = -1;
     detector_map_name = "";
-    vec_module_name = {};
 #ifdef STIR_ROOT_ROTATION_AS_V4
     half_block = module_repeater_y * submodule_repeater_y * crystal_repeater_y / 2  - 1;
     if (half_block < 0 )
@@ -223,8 +222,7 @@ InputStreamFromROOTFileForCylindricalPET::initialise_keymap()
     this->parser.add_key("number of layer Y", &this->layer_repeater_y);
     this->parser.add_key("number of layer Z", &this->layer_repeater_z);
     // possible to add vectorised key i.e. {a,b,c} or larger. of course this is ordered.
-    this->parser.add_key("root to detector map", &this->detector_map_name);
-    this->parser.add_key("gate module", &this->vec_module_name);
+    this->parser.add_key("detector map", &this->detector_map_name);
 }
 
 bool InputStreamFromROOTFileForCylindricalPET::
@@ -258,10 +256,13 @@ set_up(const std::string & header_path)
     stream_ptr->SetBranchAddress("moduleID2",&moduleID2, &br_moduleID2);
     stream_ptr->SetBranchAddress("rsectorID1",&rsectorID1, &br_rsectorID1);
     stream_ptr->SetBranchAddress("rsectorID2",&rsectorID2, &br_rsectorID2);
-    RootDetectorMap rootDetMap;
-    rootDetMap.set_col_split(vec_module_name.size());
-    rootDetMap.load_detectormap_from_file(detector_map_name);
-    root_to_detector_map = rootDetMap;
+    if (detector_map_name != "")
+    {
+        RootDetectorMap rootDetMap;
+        rootDetMap.set_col_split(5);
+        rootDetMap.load_detectormap_from_file(detector_map_name);
+        root_to_detector_map = rootDetMap;
+    }
     nentries = static_cast<unsigned long int>(stream_ptr->GetEntries());
     printf("number of entries in root files is: %4d\n",nentries);
     if (nentries == 0)
@@ -336,16 +337,7 @@ check_all_required_keywords_are_set(std::string& ret) const
         ok = false;
     }
     }else{
-    //std::cout << "detector map name: " << this->detector_map_name << "\n";
-    if (vec_module_name.empty()){
-        stream << "gate module is empty create a vector of modules e.g. 'gate module: {rsector, module, submodule, crystal}'";
-        ok = false;
-    }
-    //for (std::string det_name : this->vec_module_name)
-    //{
-    //    std::cout << det_name << ", ";
-    //}
-    //std::cout << "\n";
+        std::cout << "\nUsing root to ring + detector map called: " + detector_map_name + "\n";
     }
     if (!ok)
         ret = stream.str();
