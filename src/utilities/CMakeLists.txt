@@ -17,6 +17,7 @@ set(dir_EXE_SOURCES ${dir}_EXE_SOURCES)
 set(${dir_EXE_SOURCES}
 
   manip_image.cxx
+  downsample_projdata_blk.cxx
   stir_write_pgm.cxx
 	manip_projdata.cxx
 	display_projdata.cxx
