@@ -152,8 +152,8 @@ int main(int argc, char * argv[]){
                         for (uint layerB = 0; layerB < full_res_layer_num; layerB++) 
                         { 
                             if(detA==detB && ringA==ringB && layerA==layerB){continue;}; 
-                            stir::DetectionPosition<> full_res_det_pos1 = DetectionPosition(detA, ringA, layerA); 
-                            stir::DetectionPosition<> full_res_det_pos2 = DetectionPosition(detB, ringB, layerB); 
+                            stir::DetectionPosition<> full_res_det_pos1 = DetectionPosition<>(detA, ringA, layerA); 
+                            stir::DetectionPosition<> full_res_det_pos2 = DetectionPosition<>(detB, ringB, layerB); 
                             full_res_det_pos_pair.pos2() = full_res_det_pos2; 
                             full_res_det_pos_pair.pos1() = full_res_det_pos1; 
                             Bin ful_res_b;
@@ -171,8 +171,8 @@ int main(int argc, char * argv[]){
                                 std::vector<uint> full_res_det2 = {detB, ringB, layerB}; 
                                 std::vector<uint> low_res_det1 = full_res_to_low_res_map[full_res_det1];
                                 std::vector<uint> low_res_det2 = full_res_to_low_res_map[full_res_det2];
-                                stir::DetectionPosition<> low_res_det_pos1 = DetectionPosition(low_res_det1[0], low_res_det1[1], low_res_det1[2]); 
-                                stir::DetectionPosition<> low_res_det_pos2 = DetectionPosition(low_res_det2[0], low_res_det2[1], low_res_det2[2]); 
+                                stir::DetectionPosition<> low_res_det_pos1 = DetectionPosition<>(low_res_det1[0], low_res_det1[1], low_res_det1[2]); 
+                                stir::DetectionPosition<> low_res_det_pos2 = DetectionPosition<>(low_res_det2[0], low_res_det2[1], low_res_det2[2]); 
                                 low_res_det_pos_pair.pos1()=low_res_det_pos1;
                                 low_res_det_pos_pair.pos2()=low_res_det_pos2;
                                 Bin low_res_b;

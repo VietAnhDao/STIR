@@ -178,4 +178,27 @@ find_bin_given_cartesian_coordinates_of_detection(Bin& bin,
     bin.set_bin_value(-1);
 }
 
+void
+ProjDataInfoBlocksOnCylindricalNoArcCorr::
+print_crystal_map()
+{
+  std::ofstream outfile;
+  outfile.open("crystal_map.txt", std::ios_base::app);
+  outfile << "ring,\t detector,\t layer,\t x,\t y,\t z\n";
+  shared_ptr<Scanner> scanner = this->get_scanner_sptr();
+  int num_det = scanner->get_num_detectors_per_ring();
+  int num_ring = scanner->get_num_rings();
+  for(int ringA=0; ringA<num_ring; ringA++){
+      for(int detA =0; detA<num_det; detA++){
+        int detB=0;
+        if(detA==detB){detB=128;};
+        CartesianCoordinate3D<float> coord_1;
+        CartesianCoordinate3D<float> coord_2;
+        find_cartesian_coordinates_given_scanner_coordinates(coord_1, coord_2,ringA, ringA, detA, detB);
+        outfile << ringA << ",\t" << detA << ",\t" << 0 << ",\t" << coord_1.x() << ",\t" << coord_1.y() << ",\t" << coord_1.z() << "\n";
+      }
+  }
+  outfile.close();
+}
+
 END_NAMESPACE_STIR

@@ -58,7 +58,7 @@ FRAME_BASED_DT_CORR:
 #include "stir/listmode/ListModeData.h"
 #include "stir/ExamInfo.h"
 #include "stir/ProjDataInfoCylindricalNoArcCorr.h"
-
+#include "stir/ProjDataInfoBlocksOnCylindricalNoArcCorr.h"
 #include "stir/Scanner.h"
 #ifdef USE_SegmentByView
 #include "stir/ProjDataInterfile.h"
@@ -516,6 +516,7 @@ get_bin_from_event(Bin& bin, const ListEvent& event) const
   }
   else
     {
+      std::cout << "executed here\n";
       event.get_bin(bin, *template_proj_data_info_ptr);
     }
 
@@ -615,13 +616,24 @@ process_data()
 
   if(print_crystal_map){
     shared_ptr<Scanner> scanner_sptr(new Scanner(*template_proj_data_info_ptr->get_scanner_sptr()));
-    ProjDataInfoCylindricalNoArcCorr* proj_cyl = dynamic_cast<ProjDataInfoCylindricalNoArcCorr *>(
-                      ProjDataInfo::ProjDataInfoCTI(scanner_sptr, 
-                            1, scanner_sptr->get_num_rings()-1,
-                            scanner_sptr->get_num_detectors_per_ring()/2,
-                            scanner_sptr->get_default_num_arccorrected_bins(), 
-                            false));
-    proj_cyl->print_detector_map();
+    if(scanner_sptr->get_scanner_geometry()=="Cylinderical"){
+      ProjDataInfoCylindricalNoArcCorr* proj_cyl = dynamic_cast<ProjDataInfoCylindricalNoArcCorr *>(
+                        ProjDataInfo::ProjDataInfoCTI(scanner_sptr, 
+                              1, scanner_sptr->get_num_rings()-1,
+                              scanner_sptr->get_num_detectors_per_ring()/2,
+                              scanner_sptr->get_default_num_arccorrected_bins(), 
+                              false));
+      proj_cyl->print_detector_map();
+    }
+    if(scanner_sptr->get_scanner_geometry()=="BlocksOnCylindrical"){
+      ProjDataInfoBlocksOnCylindricalNoArcCorr* proj_blk = dynamic_cast<ProjDataInfoBlocksOnCylindricalNoArcCorr *>(
+                        ProjDataInfo::ProjDataInfoCTI(scanner_sptr, 
+                              1, scanner_sptr->get_num_rings()-1,
+                              scanner_sptr->get_num_detectors_per_ring()/2,
+                              scanner_sptr->get_default_num_arccorrected_bins(), 
+                              false));
+      proj_blk->print_crystal_map();
+    }
   }
 
   // a few more checks, now that we have the lm_data_ptr
@@ -775,6 +787,11 @@ process_data()
 		   {
 		     assert(start_time <= current_time);
 		     Bin bin;
+         auto p1 = record.event().get_LOR().p1();
+         auto p2 = record.event().get_LOR().p2();
+         std::cout << "=======================================================================================\n";
+         std::cout << "x1: " << p1.x() << ", y1: " << p1.y() << ", z1: " << p1.z() << ", x2: " << p2.x() << ", y2: " << p2.y() << ", z2: " << p2.z() << "\n";
+         std::cout << "=======================================================================================\n";
 		     // set value in case the event decoder doesn't touch it
 		     // otherwise it would be 0 and all events will be ignored
 		     bin.set_bin_value(1);

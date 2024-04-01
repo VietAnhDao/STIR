@@ -107,8 +107,8 @@ public:
   void find_bin_given_cartesian_coordinates_of_detection(Bin& bin,
 						  const CartesianCoordinate3D<float>& coord_1,
 						  const CartesianCoordinate3D<float>& coord_2) const;
+  void print_crystal_map();
   //@}
-
 private:
 
   virtual bool blindly_equals(const root_type * const) const;
